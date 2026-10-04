@@ -1,11 +1,12 @@
 import sqlite3
 
+from models.pedido import Pedido
+
 # Cria uma conexão com o banco de dados
 conexao = sqlite3.connect("foodpoint.db")
 
 # Cria o cursor, que será usado para executar os comandos SQL
 cursor = conexao.cursor()
-
 
 # Cria a tabela "pedido" caso ela ainda não exista
 cursor.execute("""
@@ -16,54 +17,80 @@ cursor.execute("""
     )
 """)
 
-
-# Insere um novo pedido na tabela
 cursor.execute("""
-    INSERT INTO pedido (tempo, etapa)
-    VALUES (?, ?)
-""", (5, "Separação"))
-
-# Confirma e salva a alteração no banco
-conexao.commit()
-
-
-# Define qual pedido queremos alterar, consultar e apagar
-id_pedido = 3
+    CREATE TABLE IF NOT EXISTS produto (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item TEXT,
+        valor REAL
+    )
+""")
 
 
-# Atualiza a etapa do pedido
-cursor.execute("""
-    UPDATE pedido
-    SET etapa = ?
-    WHERE id = ?
-""", ("Preparo", id_pedido))
+def salvar_pedido(pedido):
 
-# Salva a alteração feita pelo UPDATE
-conexao.commit()
+    cursor.execute("""
+        INSERT INTO pedido (tempo, etapa)
+        VALUES (?, ?)
+    """, (pedido.tempo, pedido.etapa))
 
+    conexao.commit()
+    
+    return cursor.lastrowid 
 
-# Busca o pedido pelo ID
-cursor.execute("""
-    SELECT * FROM pedido
-    WHERE id = ?
-""", (id_pedido,))
+def salvar_produto(produto):
+    cursor.execute("""
+                   
+                   INSERT INTO produto (item, valor)
+                   VALUES(?,?)
+                   
+                   """, (produto.item, produto.valor))
+    conexao.commit
 
-# Pega o primeiro resultado encontrado
-pedido = cursor.fetchone()
+def listar_pedidos():
 
-# Mostra o pedido encontrado
-print("Pedido encontrado:", pedido)
+    cursor.execute("""
+        SELECT * FROM pedido
+    """)
 
+    pedidos = cursor.fetchall()
 
-# Apaga o pedido pelo ID
-cursor.execute("""
-    DELETE FROM pedido
-    WHERE id = ?
-""", (id_pedido,))
+    return pedidos
 
-# Salva a exclusão no banco
-conexao.commit()
+def listar_produtos():
+    cursor.execute("""
+                   
+                   SELECT * FROM produto
+                   
+                   """)
+    produtos = cursor.fetchall()
+    
+    return produtos
 
+def buscar_pedido(id_pedido):
+    
+    cursor.execute("""
+                   
+                   SELECT * FROM pedido
+                   WHERE id = ?
+                   
+                   """,(id_pedido,))
+    pedido = cursor.fetchone()
+    return pedido
+    
+def atualizar_pedido(nova_etapa, id_pedido):
 
-# Fecha a conexão com o banco
-conexao.close()
+    cursor.execute("""
+        UPDATE pedido
+        SET etapa = ?
+        WHERE id = ?
+    """, (nova_etapa, id_pedido))
+    
+    conexao.commit()
+    
+
+def deletar_pedido(id_pedido):
+
+    cursor.execute("""
+        DELETE FROM pedido
+        WHERE id = ?
+    """, (id_pedido,))
