@@ -22,19 +22,26 @@ Projeto desenvolvido para praticar **Programação Orientada a Objetos (POO) em 
 * SQLite
 * Criação de tabelas
 * Registros
+* Campos e valores
 * Chave primária (PK)
+* Chave estrangeira (FK)
 * `INSERT`
 * `SELECT`
 * `WHERE`
 * `UPDATE`
 * `DELETE`
+* `fetchone()`
+* `fetchall()`
+* `commit()`
 * CRUD
 
 ## 🍔 FoodPoint
 
-O projeto utiliza o contexto do FoodPoint para aplicar os conceitos estudados na prática.
+O projeto utiliza o contexto do **FoodPoint**, um sistema voltado para análise de dados operacionais de empresas do setor alimentício.
 
-Atualmente, o sistema possui uma estrutura inicial para trabalhar com **pedidos e produtos**, além de uma conexão com banco de dados SQLite para armazenar os pedidos.
+A ideia deste projeto é utilizar o FoodPoint como base para praticar os conceitos de programação e banco de dados de forma incremental.
+
+Atualmente, o projeto possui classes para **pedidos e produtos**, além de operações de CRUD utilizando **SQLite**.
 
 ## 🗂️ Estrutura do projeto
 
@@ -59,10 +66,23 @@ POO-FoodPoint/
 
 ## 🎯 Objetivo
 
-O objetivo é aprender e aplicar conceitos de programação e desenvolvimento backend de forma incremental, evoluindo o projeto aos poucos até chegar a uma estrutura mais completa do FoodPoint.
+O objetivo é aprender e aplicar conceitos de **POO, banco de dados e desenvolvimento backend** por meio de um projeto prático.
+
+O projeto será desenvolvido aos poucos, adicionando novas funcionalidades conforme os conteúdos forem estudados.
 
 ## 🚧 Status
 
 **Em desenvolvimento.**
 
-Novas funcionalidades serão adicionadas conforme os estudos de POO, banco de dados, API e integração com inteligência artificial avançarem.
+Atualmente, o projeto conta com:
+
+* Classes `Pedido` e `Produto`
+* Relação entre objetos em Python
+* Banco de dados SQLite
+* Cadastro de pedidos e produtos
+* Consulta de registros
+* Atualização de pedidos
+* Exclusão de pedidos
+* Operações básicas de CRUD
+
+Novas funcionalidades serão adicionadas conforme os estudos avançarem.
