@@ -1,53 +1,48 @@
-from models.pedido import Pedido
-from models.produto import Produto
 
+from flask import Flask, render_template, request, redirect, url_for
 from database import (
-    salvar_pedido,
-    salvar_produto,
     listar_pedidos,
-    listar_produtos,
-    buscar_pedido,
+    salvar_pedido,
     atualizar_pedido,
     deletar_pedido
 )
+from models.pedido import Pedido
+
+app = Flask(__name__)
 
 
-produto1 = Produto("Hamburguer", 70)
-produto2 = Produto("Batata Frita", 12)
-produto3 = Produto("Refrizinho", 8)
-
-salvar_produto(produto1)
-salvar_produto(produto2)
-salvar_produto(produto3)
-
-produtos_banco = listar_produtos()
-
-print(produtos_banco)
-
-produtos = [produto1, produto2, produto3]
+@app.route("/")
+def pagina_inicial():
+    pedidos = listar_pedidos()
+    return render_template("pedidos.html", pedidos=pedidos)
 
 
-pedido1 = Pedido(5, "Separação", produtos)
+@app.route("/cadastrar", methods=["POST"])
+def cadastrar_pedido():
+    tempo = int(request.form["tempo"])
+    etapa = request.form["etapa"]
+
+    pedido = Pedido(tempo, etapa, [])
+    salvar_pedido(pedido)
+
+    return redirect(url_for("pagina_inicial"))
 
 
-pedido1.mostrarPedido()
+@app.route("/alterar_etapa/<int:id_pedido>", methods=["POST"])
+def alterar_etapa(id_pedido):
+    nova_etapa = request.form["etapa"]
 
-print(pedido1.tempo)
-print(pedido1.etapa)
+    atualizar_pedido(nova_etapa, id_pedido)
+
+    return redirect(url_for("pagina_inicial"))
 
 
-id_pedido = salvar_pedido(pedido1)
+@app.route("/deletar/<int:id_pedido>", methods=["POST"])
+def excluir_pedido(id_pedido):
+    deletar_pedido(id_pedido)
 
-print(id_pedido)
+    return redirect(url_for("pagina_inicial"))
 
-atualizar_pedido("Preparo", id_pedido)
 
-pedido = buscar_pedido(id_pedido)
-
-print(pedido)
-
-deletar_pedido(id_pedido)
-
-pedidos = listar_pedidos()
-
-print(pedidos)
+if __name__ == "__main__":
+    app.run(debug=True)
