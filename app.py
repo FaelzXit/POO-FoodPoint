@@ -1,5 +1,8 @@
 
+import math
 import os
+import requests
+import time
 
 from flask import (
     Flask,
@@ -21,16 +24,19 @@ from database import (
     listar_historico_pedido
 )
 
-from models.pedido import Pedido
+from pedidos.cadastro import criar_pedido
+from pedidos.consulta import buscar_produtos_dos_pedidos
+
 
 
 app = Flask(__name__)
+
+expediente_aberto = True
 
 app.secret_key = os.environ.get(
     "FLASK_SECRET_KEY",
     "chave-apenas-para-desenvolvimento"
 )
-
 
 @app.route("/")
 def pagina_inicial():
@@ -42,23 +48,36 @@ def pagina_inicial():
         pedido[0]: listar_historico_pedido(pedido[0])
         for pedido in todos_pedidos
     }
+    produtos_por_pedido, totais_por_pedido = buscar_produtos_dos_pedidos(
+        todos_pedidos
+    )
 
     return render_template(
         "pedidos.html",
         pedidos=pedidos,
         todos_pedidos=todos_pedidos,
         total_pedidos=total_pedidos,
-        historicos=historicos
+        historicos=historicos,
+        produtos_por_pedido=produtos_por_pedido,
+        totais_por_pedido=totais_por_pedido
     )
 
 
 @app.route("/cadastrar", methods=["POST"])
 def cadastrar_pedido():
-    pedido = Pedido(0, "Separação", [])
+    if not expediente_aberto:
+        flash("O expediente foi encerrado. Não é possível avançar pedidos.")
+        return redirect(url_for("pagina_inicial"))
+    pedido, erro = criar_pedido(request.form)
+
+    if erro is not None:
+        flash(erro)
+        return redirect(url_for("pagina_inicial"))
 
     try:
         id_pedido = salvar_pedido(pedido)
-        flash(f"Pedido #{id_pedido} cadastrado com sucesso!")
+        total = pedido.somar_produtos()
+        flash(f"Pedido #{id_pedido} cadastrado! Total: R$ {total:.2f}.")
 
     except Exception:
         app.logger.exception("Erro ao cadastrar pedido.")
@@ -69,6 +88,9 @@ def cadastrar_pedido():
 
 @app.route("/avancar_pedido/<int:id_pedido>", methods=["POST"])
 def avancar_pedido(id_pedido):
+    if not expediente_aberto:
+        flash("O expediente foi encerrado. Não é possível cadastrar pedidos.")
+        return redirect(url_for("pagina_inicial"))
     pedido = buscar_pedido(id_pedido)
 
     if pedido is None:
@@ -79,8 +101,26 @@ def avancar_pedido(id_pedido):
 
     try:
         if etapa_atual == "Separação":
+            inicio_separacao = pedido[3]
+            if inicio_separacao is None:
+                inicio_separacao = int(time.time())
+
+            segundos_separacao = max(
+                0,
+                int(time.time()) - int(inicio_separacao)
+            )
+            minutos_separacao = max(1, math.ceil(segundos_separacao / 60))
+
+            registrar_tempo_etapa(
+                id_pedido,
+                "Separação",
+                minutos_separacao
+            )
             atualizar_pedido("Preparo", id_pedido)
-            flash(f"Pedido #{id_pedido} avançou para Preparo.")
+            flash(
+                f"Pedido #{id_pedido} iniciou Preparo. "
+                f"Tempo de Separação: {minutos_separacao} min."
+            )
 
         elif etapa_atual == "Preparo":
             tempo = request.form.get("tempo", type=int)
@@ -132,6 +172,35 @@ def avancar_pedido(id_pedido):
 
     return redirect(url_for("pagina_inicial"))
 
+@app.route("/finalizar-expediente", methods=["POST"])
+def finalizar_expediente():
+    global expediente_aberto
+    expediente_aberto = False
 
+    todos_pedidos = listar_todos_pedidos()
+    historicos = {}
+
+    for pedido in todos_pedidos:
+        id_pedido = pedido[0]
+        historicos[id_pedido] = listar_historico_pedido(id_pedido)
+
+    dados_expediente = {
+        "total_pedidos": len(todos_pedidos),
+        "historicos": historicos,
+    }
+
+    try:
+        resposta = requests.post(
+            "http://127.0.0.1:5001/api/expediente",
+            json=dados_expediente,
+            timeout=120,
+        )
+        resposta.raise_for_status()
+        flash("Expediente finalizado. Dados enviados ao FoodPoint.")
+    except requests.RequestException:
+        app.logger.exception("Não foi possível enviar os dados ao FoodPoint.")
+        flash("Expediente finalizado, mas não foi possível enviar os dados ao FoodPoint.")
+
+    return redirect(url_for("pagina_inicial"))
 if __name__ == "__main__":
     app.run(debug=True)

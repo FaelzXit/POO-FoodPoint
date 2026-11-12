@@ -6,7 +6,7 @@ A cada nova etapa, o sistema ganha uma pequena parte e o código serve como regi
 
 ## Sobre o projeto
 
-O FoodPoint é um sistema simples para acompanhar pedidos de uma cozinha. No momento, é possível cadastrar pedidos, avançá-los pelas etapas de produção e registrar os tempos de preparo e finalização.
+O FoodPoint é um sistema simples para acompanhar pedidos de uma cozinha. É possível cadastrar um pedido com até três produtos e seus valores, avançá-lo pelas etapas de produção e registrar os tempos de preparo e finalização.
 
 O projeto está em desenvolvimento e representa o conhecimento aplicado até aqui. O **HTML e o CSS** foram criados com o **Antigravity** para auxiliar no design da aplicação e trazer ideias inovadoras para a interface. O backend e a lógica em **Python** foram desenvolvidos com apoio do ChatGPT durante o processo de aprendizado.
 
@@ -62,6 +62,9 @@ POO-FoodPoint/
 ├── models/
 │   ├── pedido.py          # Classe Pedido
 │   └── produto.py         # Classe Produto
+├── pedidos/
+│   ├── cadastro.py        # Cadastro simples de produtos no pedido
+│   └── consulta.py        # Leitura dos produtos e total de cada pedido
 ├── templates/
 │   └── pedidos.html       # Interface HTML com templates Jinja
 └── static/
@@ -88,7 +91,7 @@ O módulo `database.py` cria as tabelas necessárias quando é carregado. Os dad
 
 ## Experimentar o fluxo
 
-1. Use **Novo Pedido** para criar um pedido na etapa Separação.
+1. Use **Novo Pedido** e informe pelo menos um produto e seu valor para criar um pedido na etapa Separação. Cada linha representa uma unidade e aceita até três itens.
 2. Avance o pedido para Preparo.
 3. Informe o tempo de preparo em minutos para avançar à Finalização.
 4. Informe o tempo de finalização para concluir a entrega.

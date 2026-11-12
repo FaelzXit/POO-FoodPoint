@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,8 @@
     <!-- Google Fonts para tipografia moderna -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -23,27 +25,32 @@
                 </div>
             </div>
 
-            <form action="{{ url_for('cadastrar_pedido') }}" method="POST" class="header-action">
-                <button type="submit" class="btn btn-primary">
-                    <span class="btn-icon">+</span> Novo Pedido
-                </button>
-            </form>
+            <div class="box-nav">
+                <a href="#novo-pedido" class="btn btn-primary">
+                    <span class="btn-icon"></span> Novo Pedido
+                </a>
+                <form action="{{ url_for('finalizar_expediente') }}" method="POST">
+                    <button type="submit" class="btn btn-second">
+                        Encerrar Expediente
+                    </button>
+                </form>
+            </div>
         </div>
     </header>
 
     <main class="container">
         <!-- Notificações Flash -->
         {% with mensagens = get_flashed_messages() %}
-            {% if mensagens %}
-                <div class="mensagens">
-                    {% for mensagem in mensagens %}
-                        <div class="flash-alert">
-                            <span class="flash-icon">🔔</span>
-                            <span>{{ mensagem }}</span>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+        {% if mensagens %}
+        <div class="mensagens">
+            {% for mensagem in mensagens %}
+            <div class="flash-alert">
+                <span class="flash-icon">🔔</span>
+                <span>{{ mensagem }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% endwith %}
 
         <!-- Métricas / Resumo Superior -->
@@ -64,16 +71,38 @@
                 </div>
             </div>
 
-            <div class="stat-card card-quick-action">
-                <div class="stat-content">
-                    <span class="stat-label">Ação Rápida</span>
-                    <form action="{{ url_for('cadastrar_pedido') }}" method="POST">
-                        <button type="submit" class="btn btn-sm btn-outline">
-                            Gerar Pedido Imediato
-                        </button>
-                    </form>
+        </section>
+
+        <section class="section-block" id="novo-pedido">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Montar novo pedido</h2>
+                    <p class="section-desc">Informe nome e valor; cada linha representa uma unidade. Você pode incluir
+                        até três itens.</p>
                 </div>
             </div>
+
+            <form action="{{ url_for('cadastrar_pedido') }}" method="POST" class="novo-pedido-form">
+                <div class="produto-linha">
+                    <label for="item-1">Produto 1</label>
+                    <input id="item-1" name="item_1" type="text" maxlength="80" placeholder="Ex.: Hambúrguer">
+                    <label for="valor-1">Valor (R$)</label>
+                    <input id="valor-1" name="valor_1" type="number" min="0.01" step="0.01" placeholder="25,00">
+                </div>
+                <div class="produto-linha">
+                    <label for="item-2">Produto 2</label>
+                    <input id="item-2" name="item_2" type="text" maxlength="80" placeholder="Opcional">
+                    <label for="valor-2">Valor (R$)</label>
+                    <input id="valor-2" name="valor_2" type="number" min="0.01" step="0.01" placeholder="12,00">
+                </div>
+                <div class="produto-linha">
+                    <label for="item-3">Produto 3</label>
+                    <input id="item-3" name="item_3" type="text" maxlength="80" placeholder="Opcional">
+                    <label for="valor-3">Valor (R$)</label>
+                    <input id="valor-3" name="valor_3" type="number" min="0.01" step="0.01" placeholder="8,00">
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar pedido</button>
+            </form>
         </section>
 
         <!-- Seção: Pedidos em Andamento -->
@@ -87,118 +116,128 @@
             </div>
 
             {% if pedidos %}
-                <div class="pedidos-grid">
-                    {% for pedido in pedidos %}
-                        <article class="pedido-card">
-                            <header class="pedido-card-header">
-                                <span class="pedido-id">Pedido #{{ pedido[0] }}</span>
+            <div class="pedidos-grid">
+                {% for pedido in pedidos %}
+                <article class="pedido-card">
+                    <header class="pedido-card-header">
+                        <span class="pedido-id">Pedido #{{ pedido[0] }}</span>
 
-                                {% if pedido[2] == "Separação" %}
-                                    <span class="badge badge-separacao">Separação</span>
-                                {% elif pedido[2] == "Preparo" %}
-                                    <span class="badge badge-preparo">Em Preparo</span>
-                                {% elif pedido[2] == "Finalização" %}
-                                    <span class="badge badge-finalizacao">Finalização</span>
-                                {% else %}
-                                    <span class="badge">{{ pedido[2] }}</span>
-                                {% endif %}
-                            </header>
+                        {% if pedido[2] == "Separação" %}
+                        <span class="badge badge-separacao">
+                            Separação · <span class="contador-separacao" data-inicio="{{ pedido[3] }}">00:00</span>
+                        </span>
+                        {% elif pedido[2] == "Preparo" %}
+                        <span class="badge badge-preparo">Em Preparo</span>
+                        {% elif pedido[2] == "Finalização" %}
+                        <span class="badge badge-finalizacao">Finalização</span>
+                        {% else %}
+                        <span class="badge">{{ pedido[2] }}</span>
+                        {% endif %}
+                    </header>
 
-                            <!-- Barra de progresso visual das etapas -->
-                            <div class="pedido-stepper">
-                                <div class="step-point {% if pedido[2] in ['Separação', 'Preparo', 'Finalização', 'Entrega'] %}active{% endif %}"></div>
-                                <div class="step-line {% if pedido[2] in ['Preparo', 'Finalização', 'Entrega'] %}active{% endif %}"></div>
-                                <div class="step-point {% if pedido[2] in ['Preparo', 'Finalização', 'Entrega'] %}active{% endif %}"></div>
-                                <div class="step-line {% if pedido[2] in ['Finalização', 'Entrega'] %}active{% endif %}"></div>
-                                <div class="step-point {% if pedido[2] in ['Finalização', 'Entrega'] %}active{% endif %}"></div>
+                    <!-- Barra de progresso visual das etapas -->
+                    <div class="pedido-stepper">
+                        <div
+                            class="step-point {% if pedido[2] in ['Separação', 'Preparo', 'Finalização', 'Entrega'] %}active{% endif %}">
+                        </div>
+                        <div
+                            class="step-line {% if pedido[2] in ['Preparo', 'Finalização', 'Entrega'] %}active{% endif %}">
+                        </div>
+                        <div
+                            class="step-point {% if pedido[2] in ['Preparo', 'Finalização', 'Entrega'] %}active{% endif %}">
+                        </div>
+                        <div class="step-line {% if pedido[2] in ['Finalização', 'Entrega'] %}active{% endif %}"></div>
+                        <div class="step-point {% if pedido[2] in ['Finalização', 'Entrega'] %}active{% endif %}"></div>
+                    </div>
+
+                    <div class="pedido-card-body">
+                        <div class="pedido-produtos">
+                            <strong>Itens do pedido</strong>
+                            {% if produtos_por_pedido[pedido[0]] %}
+                            <ul>
+                                {% for produto in produtos_por_pedido[pedido[0]] %}
+                                <li>{{ produto[1] }} — R$ {{ "%.2f"|format(produto[2])|replace(".", ",") }}</li>
+                                {% endfor %}
+                            </ul>
+                            <strong>Total: R$ {{ "%.2f"|format(totais_por_pedido[pedido[0]])|replace(".", ",")
+                                }}</strong>
+                            {% else %}
+                            <p class="empty-hint">Este pedido ainda não tem produtos.</p>
+                            {% endif %}
+                        </div>
+
+                        {% if pedido[2] == "Separação" %}
+                        <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST"
+                            class="pedido-action-form">
+                            <p class="etapa-hint">Itens prontos para entrar na cozinha.</p>
+                            <button type="submit" class="btn btn-block btn-primary">
+                                Iniciar preparo &rarr;
+                            </button>
+                        </form>
+
+                        {% elif pedido[2] == "Preparo" %}
+                        <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST"
+                            class="pedido-action-form">
+                            <label for="tempo-preparo-{{ pedido[0] }}" class="input-label">
+                                Tempo de preparo:
+                            </label>
+                            <div class="input-inline-group">
+                                <input type="number" id="tempo-preparo-{{ pedido[0] }}" name="tempo" min="1" step="1"
+                                    placeholder="Minutos (ex: 15)" required class="form-control">
+                                <span class="unit-tag">min</span>
                             </div>
 
-                            <div class="pedido-card-body">
-                                {% if pedido[2] == "Separação" %}
-                                    <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST" class="pedido-action-form">
-                                        <p class="etapa-hint">Itens prontos para entrar na cozinha.</p>
-                                        <button type="submit" class="btn btn-block btn-primary">
-                                            Iniciar preparo &rarr;
-                                        </button>
-                                    </form>
+                            <button type="submit" class="btn btn-block btn-warning">
+                                Registrar preparo e avançar &rarr;
+                            </button>
+                        </form>
 
-                                {% elif pedido[2] == "Preparo" %}
-                                    <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST" class="pedido-action-form">
-                                        <label for="tempo-preparo-{{ pedido[0] }}" class="input-label">
-                                            Tempo de preparo:
-                                        </label>
-                                        <div class="input-inline-group">
-                                            <input
-                                                type="number"
-                                                id="tempo-preparo-{{ pedido[0] }}"
-                                                name="tempo"
-                                                min="1"
-                                                step="1"
-                                                placeholder="Minutos (ex: 15)"
-                                                required
-                                                class="form-control"
-                                            >
-                                            <span class="unit-tag">min</span>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-block btn-warning">
-                                            Registrar preparo e avançar &rarr;
-                                        </button>
-                                    </form>
-
-                                {% elif pedido[2] == "Finalização" %}
-                                    <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST" class="pedido-action-form">
-                                        <label for="tempo-finalizacao-{{ pedido[0] }}" class="input-label">
-                                            Tempo de finalização:
-                                        </label>
-                                        <div class="input-inline-group">
-                                            <input
-                                                type="number"
-                                                id="tempo-finalizacao-{{ pedido[0] }}"
-                                                name="tempo"
-                                                min="1"
-                                                step="1"
-                                                placeholder="Minutos (ex: 5)"
-                                                required
-                                                class="form-control"
-                                            >
-                                            <span class="unit-tag">min</span>
-                                        </div>
-
-                                        <button type="submit" class="btn btn-block btn-success">
-                                            Registrar finalização e entregar &check;
-                                        </button>
-                                    </form>
-                                {% endif %}
+                        {% elif pedido[2] == "Finalização" %}
+                        <form action="{{ url_for('avancar_pedido', id_pedido=pedido[0]) }}" method="POST"
+                            class="pedido-action-form">
+                            <label for="tempo-finalizacao-{{ pedido[0] }}" class="input-label">
+                                Tempo de finalização:
+                            </label>
+                            <div class="input-inline-group">
+                                <input type="number" id="tempo-finalizacao-{{ pedido[0] }}" name="tempo" min="1"
+                                    step="1" placeholder="Minutos (ex: 5)" required class="form-control">
+                                <span class="unit-tag">min</span>
                             </div>
 
-                            <footer class="pedido-card-footer">
-                                <details class="historico-dropdown">
-                                    <summary>Ver histórico de tempos</summary>
-                                    {% set registros = historicos[pedido[0]] %}
-                                    {% if registros %}
-                                        <ul class="timeline-list">
-                                            {% for registro in registros %}
-                                                <li>
-                                                    <span class="timeline-stage">{{ registro[2] }}</span>
-                                                    <span class="timeline-time">{{ registro[3] }} min</span>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    {% else %}
-                                        <p class="empty-hint">Nenhum tempo registrado ainda.</p>
-                                    {% endif %}
-                                </details>
-                            </footer>
-                        </article>
-                    {% endfor %}
-                </div>
+                            <button type="submit" class="btn btn-block btn-success">
+                                Registrar finalização e entregar &check;
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+
+                    <footer class="pedido-card-footer">
+                        <details class="historico-dropdown">
+                            <summary>Ver histórico de tempos</summary>
+                            {% set registros = historicos[pedido[0]] %}
+                            {% if registros %}
+                            <ul class="timeline-list">
+                                {% for registro in registros %}
+                                <li>
+                                    <span class="timeline-stage">{{ registro[2] }}</span>
+                                    <span class="timeline-time">{{ registro[3] }} min</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <p class="empty-hint">Nenhum tempo registrado ainda.</p>
+                            {% endif %}
+                        </details>
+                    </footer>
+                </article>
+                {% endfor %}
+            </div>
             {% else %}
-                <div class="empty-state">
-                    <span class="empty-state-icon">🍳</span>
-                    <h3>Nenhum pedido em andamento</h3>
-                    <p>Todos os pedidos foram concluídos ou você ainda não cadastrou novas comandas hoje.</p>
-                </div>
+            <div class="empty-state">
+                <span class="empty-state-icon">🍳</span>
+                <h3>Nenhum pedido em andamento</h3>
+                <p>Todos os pedidos foram concluídos ou você ainda não cadastrou novas comandas hoje.</p>
+            </div>
             {% endif %}
         </section>
 
@@ -212,63 +251,77 @@
             </div>
 
             {% if todos_pedidos %}
-                <div class="table-card">
-                    <div class="table-responsive">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 120px;">ID</th>
-                                    <th style="width: 180px;">Etapa / Status</th>
-                                    <th>Tempos Registrados</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for pedido in todos_pedidos %}
-                                    <tr>
-                                        <td>
-                                            <strong class="order-tag">#{{ pedido[0] }}</strong>
-                                        </td>
-                                        <td>
-                                            {% if pedido[2] == "Entrega" %}
-                                                <span class="badge badge-entrega">Entregue</span>
-                                            {% elif pedido[2] == "Separação" %}
-                                                <span class="badge badge-separacao">Separação</span>
-                                            {% elif pedido[2] == "Preparo" %}
-                                                <span class="badge badge-preparo">Preparo</span>
-                                            {% elif pedido[2] == "Finalização" %}
-                                                <span class="badge badge-finalizacao">Finalização</span>
-                                            {% else %}
-                                                <span class="badge">{{ pedido[2] }}</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% set registros = historicos[pedido[0]] %}
-                                            {% if registros %}
-                                                <div class="tags-container">
-                                                    {% for registro in registros %}
-                                                        <span class="chip-time">
-                                                            <strong>{{ registro[2] }}:</strong> {{ registro[3] }} min
-                                                        </span>
-                                                    {% endfor %}
-                                                </div>
-                                            {% else %}
-                                                <span class="text-muted">Sem tempos registrados</span>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">ID</th>
+                                <th style="width: 180px;">Etapa / Status</th>
+                                <th>Itens e total</th>
+                                <th>Tempos Registrados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pedido in todos_pedidos %}
+                            <tr>
+                                <td>
+                                    <strong class="order-tag">#{{ pedido[0] }}</strong>
+                                </td>
+                                <td>
+                                    {% if pedido[2] == "Entrega" %}
+                                    <span class="badge badge-entrega">Entregue</span>
+                                    {% elif pedido[2] == "Separação" %}
+                                    <span class="badge badge-separacao">Separação</span>
+                                    {% elif pedido[2] == "Preparo" %}
+                                    <span class="badge badge-preparo">Preparo</span>
+                                    {% elif pedido[2] == "Finalização" %}
+                                    <span class="badge badge-finalizacao">Finalização</span>
+                                    {% else %}
+                                    <span class="badge">{{ pedido[2] }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if produtos_por_pedido[pedido[0]] %}
+                                    {% for produto in produtos_por_pedido[pedido[0]] %}
+                                    <div>{{ produto[1] }} — R$ {{ "%.2f"|format(produto[2])|replace(".", ",") }}</div>
+                                    {% endfor %}
+                                    <strong>Total: R$ {{ "%.2f"|format(totais_por_pedido[pedido[0]])|replace(".", ",")
+                                        }}</strong>
+                                    {% else %}
+                                    <span class="text-muted">Sem produtos</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% set registros = historicos[pedido[0]] %}
+                                    {% if registros %}
+                                    <div class="tags-container">
+                                        {% for registro in registros %}
+                                        <span class="chip-time">
+                                            <strong>{{ registro[2] }}:</strong> {{ registro[3] }} min
+                                        </span>
+                                        {% endfor %}
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted">Sem tempos registrados</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
+            </div>
             {% else %}
-                <div class="empty-state">
-                    <span class="empty-state-icon">📁</span>
-                    <h3>Nenhum pedido cadastrado</h3>
-                    <p>Cadastre um pedido acima para começar a registrar o fluxo.</p>
-                </div>
+            <div class="empty-state">
+                <span class="empty-state-icon">📁</span>
+                <h3>Nenhum pedido cadastrado</h3>
+                <p>Cadastre um pedido acima para começar a registrar o fluxo.</p>
+            </div>
             {% endif %}
         </section>
     </main>
+    <script src="{{ url_for('static', filename='timer-separacao.js') }}" defer></script>
 </body>
+
 </html>

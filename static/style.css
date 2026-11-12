@@ -1,37 +1,33 @@
-/* ==========================================================
-   FoodPoint - Design System & Modern Layout
-   ========================================================== */
-
 :root {
-    --primary: #15803d;
-    --primary-hover: #166534;
-    --primary-light: #dcfce7;
-    --primary-text: #14532d;
+    --primary: #ea5b1d;
+    --primary-hover: #ff6600;
+    --primary-light: #ffeadf;
+    --primary-text: #9a3412;
 
     --warning: #b45309;
-    --warning-light: #fef3c7;
+    --warning-light: #fff3d6;
     --warning-text: #78350f;
 
-    --info: #0284c7;
-    --info-light: #e0f2fe;
-    --info-text: #0369a1;
+    --info: #ea5b1d;
+    --info-light: #fff0e8;
+    --info-text: #9a3412;
 
     --purple: #7c3aed;
     --purple-light: #f3e8ff;
     --purple-text: #5b21b6;
 
-    --bg-page: #f8fafc;
+    --bg-page: #ffeee6;
     --bg-surface: #ffffff;
-    --border-color: #e2e8f0;
-    --border-subtle: #f1f5f9;
+    --border-color: #eadbd2;
+    --border-subtle: #f8eee8;
 
-    --text-main: #0f172a;
-    --text-muted: #64748b;
-    --text-light: #94a3b8;
+    --text-main: #333333;
+    --text-muted: #81766f;
+    --text-light: #a79a92;
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+    --shadow-sm: 0 1px 2px rgba(80, 45, 25, 0.05);
+    --shadow-md: 0 4px 8px rgba(80, 45, 25, 0.08);
+    --shadow-lg: 0 10px 20px rgba(80, 45, 25, 0.1);
 
     --radius-sm: 6px;
     --radius-md: 10px;
@@ -41,7 +37,6 @@
     --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Reset Básico */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -56,16 +51,12 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Layout Geral */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 28px 20px 60px;
 }
 
-/* ==========================================================
-   Header & Navbar
-   ========================================================== */
 .navbar {
     background-color: var(--bg-surface);
     border-bottom: 1px solid var(--border-color);
@@ -78,7 +69,7 @@ body {
 .navbar-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 14px 20px;
+    padding: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -99,6 +90,7 @@ body {
     height: 44px;
     background: var(--primary-light);
     border-radius: var(--radius-md);
+    color: var(--primary);
 }
 
 .brand-title {
@@ -115,9 +107,6 @@ body {
     font-weight: 500;
 }
 
-/* ==========================================================
-   Botões
-   ========================================================== */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -132,19 +121,34 @@ body {
     cursor: pointer;
     transition: all 0.15s ease-in-out;
     text-decoration: none;
-    white-space: nowrap;
 }
 
-.btn-primary {
+.btn-primary, .btn-second {
     background-color: var(--primary);
     color: #ffffff;
-    box-shadow: 0 1px 3px rgba(21, 128, 61, 0.3);
+    box-shadow: 0 4px 10px rgba(234, 91, 29, 0.2);
 }
 
-.btn-primary:hover {
+.btn-primary:hover{
     background-color: var(--primary-hover);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(21, 128, 61, 0.25);
+    box-shadow: 0 4px 10px rgba(234, 91, 29, 0.28);
+}
+
+.btn-second:hover{
+    background-color: black;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(3, 3, 3, 0.28);
+}
+
+.box-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.box-nav form {
+    margin: 0;
 }
 
 .btn-warning {
@@ -189,9 +193,6 @@ body {
     font-weight: bold;
 }
 
-/* ==========================================================
-   Alertas e Mensagens
-   ========================================================== */
 .mensagens {
     margin-bottom: 24px;
 }
@@ -202,16 +203,13 @@ body {
     gap: 12px;
     padding: 14px 18px;
     background-color: var(--primary-light);
-    border: 1px solid #bbf7d0;
+    border: 1px solid #f4c8b1;
     color: var(--primary-text);
     border-radius: var(--radius-md);
     margin-bottom: 10px;
     font-weight: 500;
 }
 
-/* ==========================================================
-   Resumo / Métricas (Cards Superiores)
-   ========================================================== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -222,13 +220,14 @@ body {
 .stat-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
+    border-top: 3px solid var(--primary);
     border-radius: var(--radius-lg);
     padding: 20px;
     display: flex;
     align-items: center;
     gap: 16px;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .stat-card:hover {
@@ -271,14 +270,63 @@ body {
 }
 
 .card-quick-action {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #fff8f3 100%);
     justify-content: center;
     text-align: center;
 }
 
-/* ==========================================================
-   Seções de Conteúdo
-   ========================================================== */
+.novo-pedido-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.produto-linha {
+    display: grid;
+    grid-template-columns: 110px minmax(160px, 1fr) 90px minmax(120px, 180px);
+    align-items: center;
+    gap: 12px;
+}
+
+.produto-linha label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.produto-linha input {
+    min-width: 0;
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: #fffdfc;
+}
+
+.produto-linha input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(234, 91, 29, 0.15);
+}
+
+.pedido-produtos {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.pedido-produtos ul {
+    margin: 8px 0;
+    padding-left: 20px;
+    color: var(--text-muted);
+}
+
 .section-block {
     margin-bottom: 40px;
 }
@@ -314,9 +362,6 @@ body {
     font-weight: 700;
 }
 
-/* ==========================================================
-   Cards de Pedidos em Andamento (Grid)
-   ========================================================== */
 .pedidos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
@@ -326,6 +371,7 @@ body {
 .pedido-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
+    border-left: 3px solid var(--primary);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     display: flex;
@@ -336,7 +382,8 @@ body {
 
 .pedido-card:hover {
     box-shadow: var(--shadow-md);
-    border-color: #cbd5e1;
+    border-color: #e8c8b6;
+    border-left-color: var(--primary);
 }
 
 .pedido-card-header {
@@ -344,7 +391,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #fffaf7;
     border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -354,7 +401,6 @@ body {
     color: var(--text-main);
 }
 
-/* Linha visual de etapas (Stepper) */
 .pedido-stepper {
     display: flex;
     align-items: center;
@@ -420,7 +466,7 @@ body {
     font-size: 0.95rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    background-color: #fbfcfd;
+    background-color: #fffdfc;
     transition: all 0.15s ease;
 }
 
@@ -428,7 +474,7 @@ body {
     border-color: var(--primary);
     background-color: #ffffff;
     outline: none;
-    box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+    box-shadow: 0 0 0 3px rgba(234, 91, 29, 0.15);
 }
 
 .unit-tag {
@@ -440,7 +486,6 @@ body {
     pointer-events: none;
 }
 
-/* Rodapé do Card e Histórico */
 .pedido-card-footer {
     padding: 12px 20px;
     background-color: var(--bg-page);
@@ -496,9 +541,6 @@ body {
     font-style: italic;
 }
 
-/* ==========================================================
-   Badges de Status
-   ========================================================== */
 .badge {
     display: inline-flex;
     align-items: center;
@@ -514,6 +556,11 @@ body {
     color: var(--info-text);
 }
 
+.contador-separacao {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+}
+
 .badge-preparo {
     background-color: var(--warning-light);
     color: var(--warning-text);
@@ -525,13 +572,10 @@ body {
 }
 
 .badge-entrega {
-    background-color: var(--primary-light);
-    color: var(--primary-text);
+    background-color: #e8f5e9;
+    color: #2e7d32;
 }
 
-/* ==========================================================
-   Tabela Geral de Pedidos
-   ========================================================== */
 .table-card {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-color);
@@ -551,7 +595,7 @@ body {
 }
 
 .data-table th {
-    background-color: #f8fafc;
+    background-color: #fff4ed;
     color: var(--text-muted);
     font-size: 0.8rem;
     font-weight: 700;
@@ -573,7 +617,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-    background-color: #fcfcfd;
+    background-color: #fffaf7;
 }
 
 .order-tag {
@@ -605,9 +649,6 @@ body {
     font-size: 0.85rem;
 }
 
-/* ==========================================================
-   Estados Vazios (Empty State)
-   ========================================================== */
 .empty-state {
     text-align: center;
     padding: 48px 20px;
@@ -634,9 +675,6 @@ body {
     color: var(--text-muted);
 }
 
-/* ==========================================================
-   Responsividade Mobile
-   ========================================================== */
 @media (max-width: 768px) {
     .container {
         padding: 16px 14px 40px;
@@ -658,6 +696,10 @@ body {
 
     .pedidos-grid {
         grid-template-columns: 1fr;
+    }
+
+    .produto-linha {
+        grid-template-columns: 1fr 1fr;
     }
 
     .data-table th,

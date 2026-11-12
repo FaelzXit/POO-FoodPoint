@@ -19,9 +19,20 @@ def criar_tabelas():
         CREATE TABLE IF NOT EXISTS pedido (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             tempo INTEGER NOT NULL DEFAULT 0,
-            etapa TEXT NOT NULL
+            etapa TEXT NOT NULL,
+            inicio_separacao INTEGER
         )
     """)
+
+    cursor.execute("PRAGMA table_info(pedido)")
+    colunas_pedido = {coluna[1] for coluna in cursor.fetchall()}
+    if "inicio_separacao" not in colunas_pedido:
+        cursor.execute("ALTER TABLE pedido ADD COLUMN inicio_separacao INTEGER")
+        cursor.execute("""
+            UPDATE pedido
+            SET inicio_separacao = CAST(strftime('%s', 'now') AS INTEGER)
+            WHERE etapa = 'Separação' AND inicio_separacao IS NULL
+        """)
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS produto (
@@ -75,18 +86,24 @@ def salvar_pedido(pedido):
 
     try:
         cursor.execute("""
-            INSERT INTO pedido (tempo, etapa)
-            VALUES (?, ?)
+            INSERT INTO pedido (tempo, etapa, inicio_separacao)
+            VALUES (?, ?, CAST(strftime('%s', 'now') AS INTEGER))
         """, (0, "Separação"))
 
         id_pedido = cursor.lastrowid
 
         for produto in pedido.produtos:
-            if produto.id is not None:
+            if produto.id is None:
                 cursor.execute("""
-                    INSERT INTO pedido_produto (id_pedido, id_produto)
+                    INSERT INTO produto (item, valor)
                     VALUES (?, ?)
-                """, (id_pedido, produto.id))
+                """, (produto.item, produto.valor))
+                produto.id = cursor.lastrowid
+
+            cursor.execute("""
+                INSERT INTO pedido_produto (id_pedido, id_produto)
+                VALUES (?, ?)
+            """, (id_pedido, produto.id))
 
         conexao.commit()
         return id_pedido
@@ -104,7 +121,7 @@ def listar_pedidos():
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT id, tempo, etapa
+        SELECT id, tempo, etapa, inicio_separacao
         FROM pedido
         WHERE etapa != 'Entrega'
         ORDER BY id DESC
@@ -121,7 +138,7 @@ def listar_todos_pedidos():
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT id, tempo, etapa
+        SELECT id, tempo, etapa, inicio_separacao
         FROM pedido
         ORDER BY id DESC
     """)
@@ -169,6 +186,7 @@ def listar_produtos_do_pedido(id_pedido):
         JOIN pedido_produto
             ON produto.id = pedido_produto.id_produto
         WHERE pedido_produto.id_pedido = ?
+        ORDER BY pedido_produto.rowid
     """, (id_pedido,))
 
     produtos = cursor.fetchall()
@@ -182,7 +200,7 @@ def buscar_pedido(id_pedido):
     cursor = conexao.cursor()
 
     cursor.execute("""
-        SELECT id, tempo, etapa
+        SELECT id, tempo, etapa, inicio_separacao
         FROM pedido
         WHERE id = ?
     """, (id_pedido,))
