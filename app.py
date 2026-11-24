@@ -66,7 +66,7 @@ def pagina_inicial():
 @app.route("/cadastrar", methods=["POST"])
 def cadastrar_pedido():
     if not expediente_aberto:
-        flash("O expediente foi encerrado. Não é possível avançar pedidos.")
+        flash("O expediente foi encerrado. Não é possível cadastrar pedidos.")
         return redirect(url_for("pagina_inicial"))
     pedido, erro = criar_pedido(request.form)
 
@@ -89,7 +89,7 @@ def cadastrar_pedido():
 @app.route("/avancar_pedido/<int:id_pedido>", methods=["POST"])
 def avancar_pedido(id_pedido):
     if not expediente_aberto:
-        flash("O expediente foi encerrado. Não é possível cadastrar pedidos.")
+        flash("O expediente foi encerrado. Não é possível avançar pedidos.")
         return redirect(url_for("pagina_inicial"))
     pedido = buscar_pedido(id_pedido)
 
