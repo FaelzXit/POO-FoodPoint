@@ -699,11 +699,19 @@ body {
     }
 
     .produto-linha {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 6px;
     }
 
     .data-table th,
     .data-table td {
         padding: 12px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-container,
+    .box-nav {
+        flex-wrap: wrap;
     }
 }
