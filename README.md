@@ -73,10 +73,10 @@ POO-FoodPoint/
 
 ## Executar o projeto
 
-É necessário ter o **Python 3** instalado. No terminal, dentro da pasta do projeto, instale o Flask:
+É necessário ter o **Python 3** instalado. No terminal, dentro da pasta do projeto, instale as dependências:
 
 ```bash
-python -m pip install Flask
+python -m pip install Flask requests
 ```
 
 Depois, inicie a aplicação:
@@ -88,6 +88,25 @@ python app.py
 Abra no navegador o endereço indicado pelo Flask, geralmente <http://127.0.0.1:5000>.
 
 O módulo `database.py` cria as tabelas necessárias quando é carregado. Os dados ficam no arquivo `foodpoint.db`.
+
+### Painel FoodPoint
+
+Em outro terminal, na raiz do [repositório do painel](https://github.com/FaelzXit/FoodPoint):
+
+```bash
+python -m pip install Flask requests python-dotenv
+python app.py
+```
+
+Abra <http://127.0.0.1:5001>. Para configurar o OpenRouter, siga o README do painel.
+O envio do expediente requer uma versão do painel que aceite `POST /api/expediente`.
+Para usar outro endereço, defina `FOODPOINT_API_URL` com a URL completa antes de iniciar o POO-FoodPoint.
+
+### Testes
+
+```bash
+python -m unittest discover -s tests -v
+```
 
 ## Experimentar o fluxo
 
