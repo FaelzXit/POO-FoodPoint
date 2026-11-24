@@ -72,7 +72,7 @@ def cadastrar_pedido():
     pedido, erro = criar_pedido(request.form)
 
     if erro is not None:
-        flash(erro)
+        flash(erro, "erro-cadastro")
         return redirect(url_for("pagina_inicial"))
 
     try:
