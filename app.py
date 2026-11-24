@@ -198,7 +198,7 @@ def finalizar_expediente():
 
     try:
         resposta = requests.post(
-            "http://127.0.0.1:5001/api/expediente",
+            os.environ.get("FOODPOINT_API_URL", "http://127.0.0.1:5001/api/expediente"),
             json=dados_expediente,
             timeout=120,
         )
