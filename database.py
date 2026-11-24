@@ -215,6 +215,20 @@ def listar_produtos_do_pedido(id_pedido):
     return produtos
 
 
+def listar_produtos_agrupados():
+    with closing(conectar()) as conexao:
+        linhas = conexao.execute("""
+            SELECT pedido_produto.id_pedido, produto.id, produto.item, produto.valor
+            FROM pedido_produto
+            JOIN produto ON produto.id = pedido_produto.id_produto
+            ORDER BY pedido_produto.rowid
+        """)
+        agrupados = {}
+        for id_pedido, id_produto, item, valor in linhas:
+            agrupados.setdefault(id_pedido, []).append((id_produto, item, valor))
+        return agrupados
+
+
 def buscar_pedido(id_pedido):
     conexao = conectar()
     cursor = conexao.cursor()
