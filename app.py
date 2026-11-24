@@ -14,6 +14,8 @@ from flask import (
 )
 
 from database import (
+    atualizar_expediente,
+    consultar_expediente_aberto,
     salvar_pedido,
     listar_pedidos,
     listar_todos_pedidos,
@@ -30,8 +32,6 @@ from pedidos.consulta import buscar_produtos_dos_pedidos
 
 
 app = Flask(__name__)
-
-expediente_aberto = True
 
 app.secret_key = os.environ.get(
     "FLASK_SECRET_KEY",
@@ -60,13 +60,13 @@ def pagina_inicial():
         historicos=historicos,
         produtos_por_pedido=produtos_por_pedido,
         totais_por_pedido=totais_por_pedido,
-        expediente_aberto=expediente_aberto
+        expediente_aberto=consultar_expediente_aberto()
     )
 
 
 @app.route("/cadastrar", methods=["POST"])
 def cadastrar_pedido():
-    if not expediente_aberto:
+    if not consultar_expediente_aberto():
         flash("O expediente foi encerrado. Não é possível cadastrar pedidos.")
         return redirect(url_for("pagina_inicial"))
     pedido, erro = criar_pedido(request.form)
@@ -89,7 +89,7 @@ def cadastrar_pedido():
 
 @app.route("/avancar_pedido/<int:id_pedido>", methods=["POST"])
 def avancar_pedido(id_pedido):
-    if not expediente_aberto:
+    if not consultar_expediente_aberto():
         flash("O expediente foi encerrado. Não é possível avançar pedidos.")
         return redirect(url_for("pagina_inicial"))
     pedido = buscar_pedido(id_pedido)
@@ -175,8 +175,7 @@ def avancar_pedido(id_pedido):
 
 @app.route("/finalizar-expediente", methods=["POST"])
 def finalizar_expediente():
-    global expediente_aberto
-    expediente_aberto = False
+    atualizar_expediente(False)
 
     todos_pedidos = listar_todos_pedidos()
     historicos = {}

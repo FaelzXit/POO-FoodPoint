@@ -1,5 +1,6 @@
 
 import sqlite3
+from contextlib import closing
 
 
 NOME_BANCO = "foodpoint.db"
@@ -61,8 +62,27 @@ def criar_tabelas():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS expediente (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            aberto INTEGER NOT NULL CHECK (aberto IN (0, 1))
+        )
+    """)
+    cursor.execute("INSERT OR IGNORE INTO expediente (id, aberto) VALUES (1, 1)")
+
     conexao.commit()
     conexao.close()
+
+
+def consultar_expediente_aberto():
+    with closing(conectar()) as conexao:
+        estado = conexao.execute("SELECT aberto FROM expediente WHERE id = 1").fetchone()
+        return bool(estado[0])
+
+
+def atualizar_expediente(aberto):
+    with closing(conectar()) as conexao, conexao:
+        conexao.execute("UPDATE expediente SET aberto = ? WHERE id = 1", (int(aberto),))
 
 
 def salvar_produto(produto):
