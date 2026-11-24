@@ -31,13 +31,13 @@
                 </a>
                 {% if expediente_aberto %}
                 <form action="{{ url_for('finalizar_expediente') }}" method="POST">
-                    <button type="submit" class="btn btn-second">
+                    <button type="submit" class="btn btn-second" title="Expediente aberto">
                         Encerrar Expediente
                     </button>
                 </form>
                 {% else %}
                 <form action="{{ url_for('reabrir_expediente') }}" method="POST">
-                    <button type="submit" class="btn btn-second">Reabrir expediente</button>
+                    <button type="submit" class="btn btn-second" title="Expediente encerrado">Reabrir expediente</button>
                 </form>
                 {% endif %}
             </div>
@@ -61,14 +61,6 @@
 
         <!-- Métricas / Resumo Superior -->
         <section class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon-wrapper icon-total" aria-hidden="true">🕒</div>
-                <div class="stat-content">
-                    <span class="stat-label">Expediente</span>
-                    <strong class="stat-value">{{ 'Aberto' if expediente_aberto else 'Encerrado' }}</strong>
-                </div>
-            </div>
-
             <div class="stat-card">
                 <div class="stat-icon-wrapper icon-total">📋</div>
                 <div class="stat-content">
@@ -100,20 +92,20 @@
                 <div class="produto-linha">
                     <label for="item-1">Produto 1</label>
                     <input id="item-1" name="item_1" type="text" maxlength="80" placeholder="Ex.: Hambúrguer">
-                    <label for="valor-1">Valor do produto 1 (R$)</label>
-                    <input id="valor-1" name="valor_1" type="number" min="0.01" step="0.01" placeholder="25,00">
+                    <label for="valor-1">Valor (R$)</label>
+                    <input id="valor-1" aria-label="Valor (R$) do produto 1" name="valor_1" type="number" min="0.01" step="0.01" placeholder="25,00">
                 </div>
                 <div class="produto-linha">
                     <label for="item-2">Produto 2</label>
                     <input id="item-2" name="item_2" type="text" maxlength="80" placeholder="Opcional">
-                    <label for="valor-2">Valor do produto 2 (R$)</label>
-                    <input id="valor-2" name="valor_2" type="number" min="0.01" step="0.01" placeholder="12,00">
+                    <label for="valor-2">Valor (R$)</label>
+                    <input id="valor-2" aria-label="Valor (R$) do produto 2" name="valor_2" type="number" min="0.01" step="0.01" placeholder="12,00">
                 </div>
                 <div class="produto-linha">
                     <label for="item-3">Produto 3</label>
                     <input id="item-3" name="item_3" type="text" maxlength="80" placeholder="Opcional">
-                    <label for="valor-3">Valor do produto 3 (R$)</label>
-                    <input id="valor-3" name="valor_3" type="number" min="0.01" step="0.01" placeholder="8,00">
+                    <label for="valor-3">Valor (R$)</label>
+                    <input id="valor-3" aria-label="Valor (R$) do produto 3" name="valor_3" type="number" min="0.01" step="0.01" placeholder="8,00">
                 </div>
                 <button type="submit" class="btn btn-primary">Cadastrar pedido</button>
             </form>

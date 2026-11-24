@@ -309,14 +309,9 @@ body {
     background-color: #fffdfc;
 }
 
-.novo-pedido-form :focus-visible,
-#erro-cadastro:focus {
-    outline: 2px solid var(--primary-text);
-    outline-offset: 2px;
-}
-
 .produto-linha input:focus {
     border-color: var(--primary);
+    outline: none;
     box-shadow: 0 0 0 3px rgba(234, 91, 29, 0.15);
 }
 
@@ -704,19 +699,11 @@ body {
     }
 
     .produto-linha {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 6px;
+        grid-template-columns: 1fr 1fr;
     }
 
     .data-table th,
     .data-table td {
         padding: 12px 14px;
-    }
-}
-
-@media (max-width: 480px) {
-    .navbar-container,
-    .box-nav {
-        flex-wrap: wrap;
     }
 }
