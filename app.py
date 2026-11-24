@@ -59,7 +59,8 @@ def pagina_inicial():
         total_pedidos=total_pedidos,
         historicos=historicos,
         produtos_por_pedido=produtos_por_pedido,
-        totais_por_pedido=totais_por_pedido
+        totais_por_pedido=totais_por_pedido,
+        expediente_aberto=expediente_aberto
     )
 
 

@@ -56,6 +56,14 @@
         <!-- Métricas / Resumo Superior -->
         <section class="stats-grid">
             <div class="stat-card">
+                <div class="stat-icon-wrapper icon-total" aria-hidden="true">🕒</div>
+                <div class="stat-content">
+                    <span class="stat-label">Expediente</span>
+                    <strong class="stat-value">{{ 'Aberto' if expediente_aberto else 'Encerrado' }}</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
                 <div class="stat-icon-wrapper icon-total">📋</div>
                 <div class="stat-content">
                     <span class="stat-label">Total Cadastrado</span>
