@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+
 class Pedido:
 
     def __init__(self, tempo, etapa, produtos):
@@ -20,9 +23,9 @@ class Pedido:
         self.tempo = novo_tempo
 
     def somar_produtos(self):
-        soma = 0
+        soma = Decimal("0.00")
 
         for produto in self.produtos:
-            soma += produto.valor
+            soma += Decimal(str(produto.valor))
 
         return soma

@@ -92,7 +92,7 @@ def salvar_produto(produto):
     cursor.execute("""
         INSERT INTO produto (item, valor)
         VALUES (?, ?)
-    """, (produto.item, produto.valor))
+    """, (produto.item, float(produto.valor)))
 
     produto.id = cursor.lastrowid
 
@@ -117,7 +117,7 @@ def salvar_pedido(pedido):
                 cursor.execute("""
                     INSERT INTO produto (item, valor)
                     VALUES (?, ?)
-                """, (produto.item, produto.valor))
+                """, (produto.item, float(produto.valor)))
                 produto.id = cursor.lastrowid
 
             cursor.execute("""

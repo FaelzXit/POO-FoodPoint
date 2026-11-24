@@ -1,4 +1,5 @@
 import unittest
+from decimal import Decimal
 
 from pedidos.cadastro import criar_pedido
 
@@ -13,7 +14,15 @@ class CadastroTest(unittest.TestCase):
         self.assertIsNone(erro)
         self.assertEqual(pedido.etapa, "Separação")
         self.assertEqual([p.item for p in pedido.produtos], ["Lanche", "Suco", "Fruta"])
-        self.assertEqual(pedido.somar_produtos(), 13.75)
+        self.assertEqual(pedido.somar_produtos(), Decimal("13.75"))
+
+    def test_soma_centavos_sem_imprecisao(self):
+        pedido, erro = criar_pedido({
+            "item_1": "A", "valor_1": "0,10",
+            "item_2": "B", "valor_2": "0,20",
+        })
+        self.assertIsNone(erro)
+        self.assertEqual(pedido.somar_produtos(), Decimal("0.30"))
 
     def test_rejeita_dados_invalidos(self):
         casos = [
@@ -24,6 +33,7 @@ class CadastroTest(unittest.TestCase):
             ({"item_1": "Lanche", "valor_1": "NaN"}, "entre"),
             ({"item_1": "Lanche", "valor_1": "0"}, "entre"),
             ({"item_1": "Lanche", "valor_1": "100000"}, "entre"),
+            ({"item_1": "Lanche", "valor_1": "1,001"}, "duas casas"),
             ({"item_1": "a" * 81, "valor_1": "1"}, "80 caracteres"),
         ]
         for dados, mensagem in casos:

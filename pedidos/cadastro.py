@@ -1,3 +1,5 @@
+from decimal import Decimal, InvalidOperation
+
 from models.pedido import Pedido
 from models.produto import Produto
 
@@ -17,12 +19,15 @@ def criar_pedido(dados_formulario):
             return None, "Preencha o nome e o valor de cada produto."
 
         try:
-            valor = float(valor)
-        except ValueError:
+            valor = Decimal(valor)
+        except InvalidOperation:
             return None, "Informe um valor válido para cada produto."
 
-        if not 0 < valor <= 99999.99:
+        if not valor.is_finite() or not Decimal("0.01") <= valor <= Decimal("99999.99"):
             return None, "Informe um valor entre R$ 0,01 e R$ 99.999,99."
+
+        if valor != valor.quantize(Decimal("0.01")):
+            return None, "Informe um valor com até duas casas decimais."
 
         if len(nome) > 80:
             return None, "O nome do produto pode ter até 80 caracteres."
