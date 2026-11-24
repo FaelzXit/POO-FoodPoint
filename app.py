@@ -206,7 +206,10 @@ def finalizar_expediente():
         flash("Expediente finalizado. Dados enviados ao FoodPoint.")
     except requests.RequestException:
         app.logger.exception("Não foi possível enviar os dados ao FoodPoint.")
-        flash("Expediente finalizado, mas não foi possível enviar os dados ao FoodPoint.")
+        flash(
+            "Expediente encerrado. O FoodPoint não confirmou o recebimento dos dados. "
+            "Verifique se o painel está rodando e confira a URL da API."
+        )
 
     return redirect(url_for("pagina_inicial"))
 if __name__ == "__main__":
