@@ -173,6 +173,13 @@ def avancar_pedido(id_pedido):
 
     return redirect(url_for("pagina_inicial"))
 
+@app.route("/reabrir-expediente", methods=["POST"])
+def reabrir_expediente():
+    atualizar_expediente(True)
+    flash("Expediente reaberto.")
+    return redirect(url_for("pagina_inicial"))
+
+
 @app.route("/finalizar-expediente", methods=["POST"])
 def finalizar_expediente():
     atualizar_expediente(False)

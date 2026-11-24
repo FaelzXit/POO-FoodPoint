@@ -29,11 +29,17 @@
                 <a href="#novo-pedido" class="btn btn-primary">
                     <span class="btn-icon"></span> Novo Pedido
                 </a>
+                {% if expediente_aberto %}
                 <form action="{{ url_for('finalizar_expediente') }}" method="POST">
                     <button type="submit" class="btn btn-second">
                         Encerrar Expediente
                     </button>
                 </form>
+                {% else %}
+                <form action="{{ url_for('reabrir_expediente') }}" method="POST">
+                    <button type="submit" class="btn btn-second">Reabrir expediente</button>
+                </form>
+                {% endif %}
             </div>
         </div>
     </header>
